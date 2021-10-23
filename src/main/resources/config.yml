@@ -1,0 +1,5 @@
+config:
+  serverName: PureVanilla
+  title: Waypoints
+  primaryColor: "ae00ff"  # hex color
+  menuFormat: center    # can also be "list"

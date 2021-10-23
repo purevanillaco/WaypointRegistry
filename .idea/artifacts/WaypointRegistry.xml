@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="WaypointRegistry">
+    <output-path>$PROJECT_DIR$/out/artifacts/WaypointRegistry</output-path>
+    <root id="archive" name="WaypointRegistry.jar">
+      <element id="module-output" name="WaypointRegistry" />
+      <element id="dir-copy" path="$PROJECT_DIR$/src/main/resources" />
+    </root>
+  </artifact>
+</component>

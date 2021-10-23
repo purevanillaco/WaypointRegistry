@@ -1,0 +1,10 @@
+name: WaypointRegistry
+author: quiquelhappy
+description: a basic waypoint registry tool
+main: co.purevanilla.mcplugins.WaypointRegistry.Main
+version: 1.0.0
+commands:
+  waypoint:
+    description: Manage your waypoints
+    usage: /waypoint
+    permission: waypoint.use
