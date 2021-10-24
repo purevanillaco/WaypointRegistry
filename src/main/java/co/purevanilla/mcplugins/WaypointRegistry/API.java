@@ -3,9 +3,15 @@ package co.purevanilla.mcplugins.WaypointRegistry;
 import co.purevanilla.mcplugins.WaypointRegistry.data.Author;
 import co.purevanilla.mcplugins.WaypointRegistry.data.Entry;
 import co.purevanilla.mcplugins.WaypointRegistry.ex.*;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import org.bukkit.ChatColor;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
@@ -20,6 +26,25 @@ public class API {
     private static FileConfiguration data;
     private static File dataFile;
 
+    public enum Message {
+        UNKNOWN_ITEM,
+        REMOVED,
+        ADDED,
+        INTERNAL_ERROR,
+        ALREADY_ADDED,
+        PREFIX,
+        EXPORTED,
+        INVALID_NAME,
+        ADD_USAGE,
+        DELETE_USAGE,
+        UNKNOWN_COMMAND,
+        NO_ENTRIES,
+        RENAME_USAGE,
+        RENAMED,
+        HOLD_BOOK_AND_QUILL,
+        NO_PERMISSION,
+    }
+
     static void setPlugin(Plugin plugin) throws IOException, InvalidConfigurationException {
         API.plugin=plugin;
         API.data=plugin.getConfig();
@@ -32,6 +57,63 @@ public class API {
 
         API.data= new YamlConfiguration();
         API.data.load(API.dataFile);
+    }
+
+    public String getMessage(Message message){
+        String m = "Unknown message";
+        switch (message){
+            case ADDED -> m=API.plugin.getConfig().getString("messages.added");
+            case REMOVED -> m=API.plugin.getConfig().getString("messages.removed");
+            case UNKNOWN_ITEM -> m=API.plugin.getConfig().getString("messages.unknownItem");
+            case ALREADY_ADDED -> m=API.plugin.getConfig().getString("messages.alreadyAdded");
+            case INTERNAL_ERROR -> m=API.plugin.getConfig().getString("messages.internalError");
+            case PREFIX -> m=API.plugin.getConfig().getString("messages.prefix");
+            case EXPORTED -> m=API.plugin.getConfig().getString("messages.exported");
+            case INVALID_NAME -> m=API.plugin.getConfig().getString("messages.invalidName");
+            case ADD_USAGE -> m=API.plugin.getConfig().getString("messages.addUsage");
+            case DELETE_USAGE -> m=API.plugin.getConfig().getString("messages.deleteUsage");
+            case UNKNOWN_COMMAND -> m=API.plugin.getConfig().getString("messages.unknownCommand");
+            case RENAMED -> m=API.plugin.getConfig().getString("messages.renamed");
+            case RENAME_USAGE -> m=API.plugin.getConfig().getString("messages.renameUsage");
+            case NO_ENTRIES -> m=API.plugin.getConfig().getString("messages.noEntries");
+            case HOLD_BOOK_AND_QUILL -> m=API.plugin.getConfig().getString("messages.holdBookAndQuill");
+            case NO_PERMISSION -> m=API.plugin.getConfig().getString("messages.noPermission");
+        }
+        return m;
+    }
+
+    public boolean usePrimaryForPrefix(){
+        return API.plugin.getConfig().getBoolean("messages.usePrimaryForPrefix");
+    }
+
+    public boolean useSounds(){
+        return API.plugin.getConfig().getBoolean("sounds.useSounds");
+    }
+
+    public BaseComponent[] buildMessage(Message message){
+        ComponentBuilder prefix = new ComponentBuilder();
+        prefix.append(ChatColor.translateAlternateColorCodes('&', this.getMessage(Message.PREFIX)));
+        if(usePrimaryForPrefix()){
+            prefix.color(net.md_5.bungee.api.ChatColor.of("#"+this.getPrimaryColor()));
+        }
+        prefix.append(" ");
+        prefix.append(ChatColor.translateAlternateColorCodes('&', this.getMessage(message)));
+        return prefix.create();
+    }
+
+    public void sendMessage(Player player, Message message){
+        if(this.useSounds()){
+            Sound sound = null;
+            switch (message){
+                case ADDED -> sound=Sound.valueOf(API.plugin.getConfig().getString("sounds.add"));
+                case REMOVED -> sound=Sound.valueOf(API.plugin.getConfig().getString("sounds.remove"));
+                case EXPORTED -> sound=Sound.valueOf(API.plugin.getConfig().getString("sounds.export"));
+            }
+            if(sound!=null){
+                player.playSound(player.getLocation(),sound, SoundCategory.AMBIENT,1,1);
+            }
+        }
+        player.spigot().sendMessage(buildMessage(message));
     }
 
     public static API getInstance(){
@@ -68,6 +150,10 @@ public class API {
         API.data.set(path, entries.toArray());
         this.save();
         return new Author(uuid);
+    }
+
+    public void playOpenSound(Player player){
+        player.playSound(player.getLocation(),Sound.valueOf(API.plugin.getConfig().getString("sounds.open")), SoundCategory.AMBIENT,1,1);
     }
 
     public List<Entry> getAuthorEntries(Author author) throws InvalidEntryException, IOException, InvalidConfigurationException {

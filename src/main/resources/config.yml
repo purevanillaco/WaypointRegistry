@@ -1,5 +1,28 @@
 config:
-  serverName: PureVanilla
-  title: Waypoints
-  primaryColor: "ae00ff"  # hex color
-  menuFormat: center    # can also be "list"
+  serverName: "My Amazing Server"
+  title: "Waypoints!"
+  primaryColor: "818a4a"    # hex color
+  menuFormat: "center"      # can also be "list"
+messages:
+  internalError: "&cSorry, there was an internal error while processing the command"
+  alreadyAdded: "&cSorry, you already have another entry with the same name, &fuse a different name"
+  unknownItem: "&cSorry, we couldn't find this"
+  added: "&aAdded to your waypoint registry"
+  renamed: "&aRenamed"
+  noEntries: "&cNo entries"
+  removed: "&aRemoved from your waypoint registry"
+  holdBookAndQuill: "&cYou must be holding a book and quill"
+  exported: "&aExported waypoints"
+  addUsage: "&cPlease, use &4/waypoint add &o<name>&c [x] [y] [z]"
+  deleteUsage: "&cPlease, use &4/waypoint delete &o<name>"
+  renameUsage: "&cPlease, use &4/waypoint rename &o<old name> <new name>"
+  unknownCommand: "&cUnknown command"
+  invalidName: "&cInvalid name, please, avoid using '&4&o;&r&f' and really long words"
+  prefix: "&lWP&r"
+  usePrimaryForPrefix: true
+sounds: # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
+  useSounds: true
+  open: "ENTITY_CHICKEN_EGG"
+  add: "ENTITY_EXPERIENCE_ORB_PICKUP"
+  remove: "BLOCK_BARREL_CLOSE"
+  export: "BLOCK_ANVIL_USE"

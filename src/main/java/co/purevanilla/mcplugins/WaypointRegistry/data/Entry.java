@@ -43,7 +43,7 @@ public class Entry extends Author {
     }
 
     public static boolean isValidName(String name){
-        return name.length() <= 32 && name.length() >= 1 && !name.contains(";");
+        return name.length() <= 14 && name.length() >= 1 && !name.contains(";");
     }
 
     public static String nameSanitize(String name){
